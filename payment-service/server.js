@@ -26,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/health', require('./routes/health'));
+app.get('/', (req, res) => res.redirect('/health'));
 app.use('/orders', require('./routes/orders'));
 app.use('/sessions', require('./routes/sessions'));
 app.use('/checkout', require('./routes/checkout'));
