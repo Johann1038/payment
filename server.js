@@ -18,12 +18,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', require('./routes/index'));
 app.use('/api/paypal', require('./routes/paypal'));
 
-// Debug route — lists all captured orders (remove in production)
-app.get('/api/orders', (req, res) => {
-  const { listOrders } = require('./store/orders');
-  res.json(listOrders());
-});
-
 // ── Global error handler ──────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error('[Server Error]', err.message);

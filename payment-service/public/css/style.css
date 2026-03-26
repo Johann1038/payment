@@ -1,0 +1,176 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f4f5f7;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 460px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #0a2342 0%, #1a3a6b 100%);
+  color: #fff;
+  padding: 32px 28px 24px;
+  text-align: center;
+}
+
+.lock-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.card-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.description {
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+.summary {
+  padding: 24px 28px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.summary h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin-bottom: 14px;
+}
+
+.item-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+}
+
+.item-name { color: #333; }
+.item-qty { color: #999; font-size: 13px; margin-left: 4px; }
+.item-price { font-weight: 600; color: #1a1a2e; }
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid #f0f0f0;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.total-amount { color: #0a2342; }
+
+.form-section {
+  padding: 20px 28px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+input {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus { border-color: #0a2342; }
+
+.field-error {
+  font-size: 12px;
+  color: #e53e3e;
+  min-height: 16px;
+}
+
+.paypal-section {
+  padding: 20px 28px;
+  position: relative;
+}
+
+.paypal-blocker {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  z-index: 10;
+  font-size: 14px;
+  color: #888;
+  font-weight: 500;
+}
+
+.pay-error {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #e53e3e;
+  text-align: center;
+  min-height: 18px;
+}
+
+.cancel-section {
+  padding: 0 28px 24px;
+  text-align: center;
+}
+
+.cancel-link {
+  font-size: 13px;
+  color: #888;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.cancel-link:hover { color: #0a2342; }
+
+/* Expired page */
+.expired-card {
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.expired-card .lock-icon { font-size: 48px; margin-bottom: 16px; }
+.expired-card h1 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+.expired-card p { color: #666; font-size: 15px; line-height: 1.6; }

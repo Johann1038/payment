@@ -1,8 +1,11 @@
 const express = require('express');
+const axios = require('axios');
 const menu = require('../data/menu');
-const { getOrder } = require('../store/orders');
 
 const router = express.Router();
+
+const PAYMENT_SERVICE_URL = process.env.PAYMENT_SERVICE_URL || 'http://localhost:4000';
+const PAYMENT_SERVICE_API_KEY = process.env.PAYMENT_SERVICE_API_KEY || '';
 
 // Menu page
 router.get('/', (req, res) => {
@@ -23,10 +26,25 @@ router.get('/checkout', (req, res) => {
   });
 });
 
-// Success page — looks up the order by ref query param
-router.get('/success', (req, res) => {
+// Success page — fetches order from payment-service by ref query param
+router.get('/success', async (req, res) => {
   const { ref } = req.query;
-  const order = ref ? getOrder(ref) : null;
+  let order = null;
+
+  if (ref) {
+    try {
+      const response = await axios.get(`${PAYMENT_SERVICE_URL}/orders/${ref}`, {
+        headers: { 'X-API-Key': PAYMENT_SERVICE_API_KEY },
+      });
+      order = response.data;
+    } catch (err) {
+      // 404 is expected if ref is wrong; other errors we log
+      if (err.response?.status !== 404) {
+        console.error('[App] Failed to fetch order:', err.message);
+      }
+    }
+  }
+
   res.render('success', {
     order,
     whatsappNumber: process.env.WHATSAPP_NUMBER || '',

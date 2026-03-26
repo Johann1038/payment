@@ -1,4 +1,32 @@
 services:
+  # ── Payment Microservice ────────────────────────────────────────────────────
+  - type: web
+    name: payment-service
+    env: node
+    plan: free
+    rootDir: payment-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PAYPAL_BASE_URL
+        value: https://api-m.sandbox.paypal.com
+      - key: ALLOWED_ORIGINS
+        value: https://food-ordering-paypal.onrender.com  # update to your food app URL
+      # Set these manually in the Render dashboard (never put secrets in this file)
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: PAYPAL_JS_SDK_CLIENT_ID
+        sync: false
+      - key: SERVICE_URL
+        sync: false  # set to your Render payment-service URL e.g. https://payment-service-xxxx.onrender.com
+
+  # ── Food Ordering App ───────────────────────────────────────────────────────
   - type: web
     name: food-ordering-paypal
     env: node
@@ -10,12 +38,12 @@ services:
         value: production
       - key: PAYPAL_BASE_URL
         value: https://api-m.sandbox.paypal.com
+      - key: PAYMENT_SERVICE_URL
+        value: https://payment-service.onrender.com  # update to your payment-service URL
       # Set these manually in the Render dashboard (never put secrets in this file)
-      - key: PAYPAL_CLIENT_ID
-        sync: false
-      - key: PAYPAL_CLIENT_SECRET
-        sync: false
       - key: PAYPAL_JS_SDK_CLIENT_ID
         sync: false
       - key: WHATSAPP_NUMBER
+        sync: false
+      - key: PAYMENT_SERVICE_API_KEY
         sync: false

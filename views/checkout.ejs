@@ -1,3 +1,4 @@
+
 <%- include('partials/header') %>
 <script src="https://www.paypal.com/sdk/js?client-id=<%= clientId %>&currency=USD"></script>
 
@@ -156,7 +157,10 @@
           }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Server error ${res.status}`);
+        if (!res.ok) {
+          const detail = data.detail ? JSON.stringify(data.detail) : '';
+          throw new Error((data.error || `Server error ${res.status}`) + (detail ? ': ' + detail : ''));
+        }
 
         sessionStorage.setItem('orderRef', data.ref);
         return data.id;

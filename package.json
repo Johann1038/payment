@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "dev:all": "concurrently --names \"app,payment\" --prefix-colors \"cyan,yellow\" \"nodemon server.js\" \"nodemon payment-service/server.js\""
   },
   "dependencies": {
     "axios": "^1.6.0",
@@ -15,6 +16,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "nodemon": "^3.0.1"
   }
 }

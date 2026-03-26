@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Checkout</title>
+  <script src="https://www.paypal.com/sdk/js?client-id=<%= clientId %>&currency=USD"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<div class="page">
+
+  <div class="card">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="lock-icon">&#128274;</div>
+      <h1>Secure Checkout</h1>
+      <p class="description"><%= description %></p>
+    </div>
+
+    <!-- Order summary -->
+    <div class="summary">
+      <h2>Order Summary</h2>
+      <ul class="item-list">
+        <% items.forEach(item => { %>
+        <li class="item-row">
+          <span class="item-name"><%= item.name %> <span class="item-qty">x<%= item.quantity %></span></span>
+          <span class="item-price">$<%= (item.price * item.quantity).toFixed(2) %></span>
+        </li>
+        <% }) %>
+      </ul>
+      <div class="total-row">
+        <span>Total</span>
+        <span class="total-amount">$<%= total %></span>
+      </div>
+    </div>
+
+    <!-- Customer fields -->
+    <div class="form-section">
+      <div class="field">
+        <label for="customerName">Full Name</label>
+        <input type="text" id="customerName" placeholder="John Doe" />
+        <p class="field-error" id="nameError"></p>
+      </div>
+      <div class="field">
+        <label for="customerPhone">Phone Number</label>
+        <input type="tel" id="customerPhone" placeholder="+1 234 567 8900" />
+      </div>
+    </div>
+
+    <!-- PayPal button -->
+    <div class="paypal-section">
+      <div id="paypal-blocker" class="paypal-blocker">
+        <p>Enter your name to continue</p>
+      </div>
+      <div id="paypal-button-container"></div>
+      <p id="payError" class="pay-error"></p>
+    </div>
+
+    <!-- Cancel -->
+    <div class="cancel-section">
+      <a href="<%= cancelUrl %>" class="cancel-link">&#8592; Cancel and go back</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SESSION_ID = '<%= sessionId %>';
+
+  const nameInput = document.getElementById('customerName');
+  const phoneInput = document.getElementById('customerPhone');
+  const blocker = document.getElementById('paypal-blocker');
+  const nameError = document.getElementById('nameError');
+  const payError = document.getElementById('payError');
+
+  function validate() {
+    const valid = nameInput.value.trim().length >= 2;
+    blocker.style.display = valid ? 'none' : 'flex';
+    nameError.textContent = nameInput.value.length > 0 && !valid ? 'Name must be at least 2 characters' : '';
+  }
+
+  nameInput.addEventListener('input', validate);
+
+  paypal.Buttons({
+    createOrder: async () => {
+      payError.textContent = '';
+      const res = await fetch(`/checkout/${SESSION_ID}/pay`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: nameInput.value.trim(),
+          customerPhone: phoneInput.value.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to create order');
+      window._ref = data.ref;
+      return data.id;
+    },
+    onApprove: async (data) => {
+      const res = await fetch(`/checkout/${SESSION_ID}/capture`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderID: data.orderID, ref: window._ref }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Capture failed');
+      window.location.href = result.redirectUrl;
+    },
+    onCancel: () => {
+      window.location.href = '<%= cancelUrl %>';
+    },
+    onError: (err) => {
+      payError.textContent = 'Payment failed. Please try again.';
+      console.error(err);
+    },
+  }).render('#paypal-button-container');
+</script>
+
+</body>
+</html>
